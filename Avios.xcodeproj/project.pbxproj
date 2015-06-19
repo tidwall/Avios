@@ -1960,6 +1960,9 @@
 				0392BC401B3498B8000EED3F /* config.h */,
 				0392BC411B3498B8000EED3F /* Info.plist */,
 				0392BC421B3498B8000EED3F /* Avios.h */,
+				03A6F93D1B3458D100D65170 /* libavcodec */,
+				03A6FE451B3458D700D65170 /* libavformat */,
+				03A6FFCA1B3458D800D65170 /* libavutil */,
 			);
 			path = Avios;
 			sourceTree = "<group>";
@@ -2045,9 +2048,6 @@
 				0392BC3D1B3498B8000EED3F /* Avios */,
 				0392BC4A1B3499A1000EED3F /* AviosTests */,
 				03A6ED501B33A84500D65170 /* Products */,
-				03A6F93D1B3458D100D65170 /* libavcodec */,
-				03A6FE451B3458D700D65170 /* libavformat */,
-				03A6FFCA1B3458D800D65170 /* libavutil */,
 			);
 			sourceTree = "<group>";
 		};
@@ -3039,6 +3039,7 @@
 				03A6FE431B3458D700D65170 /* zmbv.c */,
 				03A6FE441B3458D700D65170 /* zmbvenc.c */,
 			);
+			name = libavcodec;
 			path = libavcodec;
 			sourceTree = "<group>";
 		};
@@ -3795,6 +3796,7 @@
 				03A6FFC81B3458D800D65170 /* yuv4mpegdec.c */,
 				03A6FFC91B3458D800D65170 /* yuv4mpegenc.c */,
 			);
+			name = libavformat;
 			path = libavformat;
 			sourceTree = "<group>";
 		};
@@ -3926,6 +3928,7 @@
 				03A6007E1B3458D900D65170 /* xtea.c */,
 				03A6007F1B3458D900D65170 /* xtea.h */,
 			);
+			name = libavutil;
 			path = libavutil;
 			sourceTree = "<group>";
 		};

@@ -10,7 +10,7 @@
 #include <pthread.h>
 
 #include "aac.h"
-#include "../libavformat/avformat.h"
+#include "libavformat/avformat.h"
 
 struct _aac_decoder {
     bool torndown;
