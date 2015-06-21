@@ -178,3 +178,29 @@ void aac_decoder_delete(aac_decoder *aac){
         free(aac);
     }
 }
+int aac_decoder_get_rate(aac_decoder *aac){
+    if (!aac){
+        return -1;
+    }
+    return aac->rate;
+}
+int aac_decoder_get_channels(aac_decoder *aac){
+    if (!aac){
+        return -1;
+    }
+    return aac->channels;
+}
+int aac_decoder_get_pcm_count(aac_decoder *aac){
+    if (!aac){
+        return -1;
+    }
+    return aac->pcm_count;
+}
+float *aac_decoder_get_pcm(aac_decoder *aac){
+    if (!aac){
+        return 0;
+    }
+    return aac->pcm;
+}
+
+

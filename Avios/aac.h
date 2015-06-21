@@ -20,6 +20,9 @@ typedef struct _aac_decoder aac_decoder;
 aac_decoder *aac_decoder_new(int rate, int channels);
 void aac_decoder_delete(aac_decoder *aac);
 bool aac_decoder_decode(aac_decoder *aac, uint8_t *data, size_t data_size);
-
+int aac_decoder_get_rate(aac_decoder *aac);
+int aac_decoder_get_channels(aac_decoder *aac);
+int aac_decoder_get_pcm_count(aac_decoder *aac);
+float *aac_decoder_get_pcm(aac_decoder *aac);
 
 #endif /* defined(__AAC_H__) */
