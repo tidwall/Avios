@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 ONCast, LLC. All rights reserved.
 //
 
-#include <stdbool.h>
 #include <pthread.h>
 
 #include "aac.h"

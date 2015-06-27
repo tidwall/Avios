@@ -17,3 +17,4 @@ FOUNDATION_EXPORT const unsigned char AviosVersionString[];
 // In this header, you should import all the public headers of your framework using statements like #import <Avios/PublicHeader.h>
 
 #import <Avios/aac.h>
+#import <Avios/theora.h>
