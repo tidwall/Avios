@@ -120,6 +120,9 @@
 		03A6087A1B34887400D65170 /* aac_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 03A6F9491B3458D100D65170 /* aac_parser.c */; };
 		03A6087B1B3488C900D65170 /* aac_ac3_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 03A6F9461B3458D100D65170 /* aac_ac3_parser.c */; };
 		03A6ED5A1B33A84500D65170 /* Avios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03A6ED4F1B33A84500D65170 /* Avios.framework */; };
+		03D44B2F1B3F0E11001D0BFF /* Theora.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D44B2E1B3F0E11001D0BFF /* Theora.swift */; };
+		03EF66B81B41C10100E2448A /* H264.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF66B71B41C10100E2448A /* H264.swift */; };
+		03EF66BA1B41C36600E2448A /* NALU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF66B91B41C36600E2448A /* NALU.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2093,6 +2096,9 @@
 		03A6FFFD1B3458D800D65170 /* timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timer.h; sourceTree = "<group>"; };
 		03A6FFFE1B3458D800D65170 /* blowfish.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = blowfish.c; sourceTree = "<group>"; };
 		03A6FFFF1B3458D800D65170 /* blowfish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blowfish.h; sourceTree = "<group>"; };
+		03D44B2E1B3F0E11001D0BFF /* Theora.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theora.swift; sourceTree = "<group>"; };
+		03EF66B71B41C10100E2448A /* H264.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = H264.swift; sourceTree = "<group>"; };
+		03EF66B91B41C36600E2448A /* NALU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NALU.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2278,6 +2284,9 @@
 				0392BC401B3498B8000EED3F /* config.h */,
 				0392BC411B3498B8000EED3F /* Info.plist */,
 				0392BC421B3498B8000EED3F /* Avios.h */,
+				03D44B2E1B3F0E11001D0BFF /* Theora.swift */,
+				03EF66B71B41C10100E2448A /* H264.swift */,
+				03EF66B91B41C36600E2448A /* NALU.swift */,
 				0313FF181B3B1AB9005D6AB0 /* libogg */,
 				0313FE4B1B3B19F9005D6AB0 /* libtheora */,
 				03A6F93D1B3458D100D65170 /* libavcodec */,
@@ -4444,6 +4453,7 @@
 				03A607B91B345D1500D65170 /* log.c in Sources */,
 				0392BC431B3498B8000EED3F /* aac.c in Sources */,
 				03A607C71B346BA600D65170 /* bitstream_filter.c in Sources */,
+				03D44B2F1B3F0E11001D0BFF /* Theora.swift in Sources */,
 				03A607BF1B345EDD00D65170 /* samplefmt.c in Sources */,
 				03A607BD1B345E5C00D65170 /* allformats.c in Sources */,
 				03A607BC1B345E2A00D65170 /* pixdesc.c in Sources */,
@@ -4458,6 +4468,7 @@
 				03A607C01B345F1600D65170 /* options.c in Sources */,
 				03A608691B3483CE00D65170 /* aacadtsdec.c in Sources */,
 				03A607C51B3466AB00D65170 /* allcodecs.c in Sources */,
+				03EF66BA1B41C36600E2448A /* NALU.swift in Sources */,
 				0313FF301B3B2223005D6AB0 /* theora.c in Sources */,
 				0313FEDF1B3B19F9005D6AB0 /* huffdec.c in Sources */,
 				0313FEDB1B3B19F9005D6AB0 /* enquant.c in Sources */,
@@ -4509,6 +4520,7 @@
 				03A607C41B34667D00D65170 /* eval.c in Sources */,
 				03A607D11B34705500D65170 /* codec_desc.c in Sources */,
 				03A608741B34869300D65170 /* fft_template.c in Sources */,
+				03EF66B81B41C10100E2448A /* H264.swift in Sources */,
 				0313FEDE1B3B19F9005D6AB0 /* fragment.c in Sources */,
 				03A607B41B345AC500D65170 /* dict.c in Sources */,
 				0313FF1D1B3B1AB9005D6AB0 /* bitwise.c in Sources */,
@@ -4634,6 +4646,7 @@
 		03A6ED641B33A84500D65170 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -4655,12 +4668,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.oncast.Avios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		03A6ED651B33A84500D65170 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

@@ -16,17 +16,17 @@ typedef struct  {
     int   uv_width;
     int   uv_height;
     int   uv_stride;
-    unsigned char *y;
-    unsigned char *u;
-    unsigned char *v;
+    const uint8_t *y;
+    const uint8_t *u;
+    const uint8_t *v;
 } theora_image;
 
 struct _theora_decoder;
 typedef struct _theora_decoder theora_decoder;
 
-theora_decoder *theora_decoder_new(uint8_t *headers, size_t headers_size);
+theora_decoder *theora_decoder_new(const uint8_t *headers, size_t headers_size);
 void theora_decoder_delete(theora_decoder *theora);
-bool theora_decoder_decode(theora_decoder *theora, uint8_t *data, size_t data_size);
+bool theora_decoder_decode(theora_decoder *theora, const uint8_t *data, size_t data_size);
 theora_image *theora_decoder_get_image(theora_decoder *theora);
 
 #endif /* __THEORA_H__ */

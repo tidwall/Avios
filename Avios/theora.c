@@ -93,11 +93,10 @@ static bool theora_decoder_init(theora_decoder *theora, uint8_t *headers, size_t
     return true;
 }
 
-bool theora_decoder_decode(theora_decoder *theora, uint8_t *data, size_t data_size){
+bool theora_decoder_decode(theora_decoder *theora, const uint8_t *data, size_t data_size){
     if (theora->torndown){
         return false;
     }
-    
     theora->ogg.packet = data;
     theora->ogg.bytes = data_size;
     theora->ogg.packetno++;
@@ -126,7 +125,7 @@ static void theora_decoder_teardown(theora_decoder *theora){
     theora_clear(&theora->state);
 }
 
-theora_decoder *theora_decoder_new(uint8_t *headers, size_t headers_size){
+theora_decoder *theora_decoder_new(const uint8_t *headers, size_t headers_size){
     theora_decoder *theora = malloc(sizeof(theora_decoder));
     if (!theora){
         return NULL;

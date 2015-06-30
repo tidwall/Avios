@@ -109,7 +109,7 @@ bool aac_decoder_teardown(aac_decoder *aac){
 }
 
 
-bool aac_decoder_decode(aac_decoder *aac, uint8_t *data, size_t data_size){
+bool aac_decoder_decode(aac_decoder *aac, const uint8_t *data, size_t data_size){
     if (aac->torndown){
         return false;
     }
