@@ -28,6 +28,7 @@ public enum H264Error : ErrorType, CustomStringConvertible {
     case VideoSessionNotReady
     case Memory
     case CMBlockBufferCreateWithMemoryBlock(OSStatus)
+    case CMBlockBufferAppendBufferReference(OSStatus)
     case CMSampleBufferCreateReady(OSStatus)
     case VTDecompressionSessionDecodeFrame(OSStatus)
     case CMVideoFormatDescriptionCreateFromH264ParameterSets(OSStatus)
@@ -42,6 +43,7 @@ public enum H264Error : ErrorType, CustomStringConvertible {
         case .VideoSessionNotReady: return "H264Error.VideoSessionNotReady"
         case .Memory: return "H264Error.Memory"
         case let .CMBlockBufferCreateWithMemoryBlock(status): return "H264Error.CMBlockBufferCreateWithMemoryBlock(\(status))"
+        case let .CMBlockBufferAppendBufferReference(status): return "H264Error.CMBlockBufferAppendBufferReference(\(status))"
         case let .CMSampleBufferCreateReady(status): return "H264Error.CMSampleBufferCreateReady(\(status))"
         case let .VTDecompressionSessionDecodeFrame(status): return "H264Error.VTDecompressionSessionDecodeFrame(\(status))"
         case let .CMVideoFormatDescriptionCreateFromH264ParameterSets(status): return "H264Error.CMVideoFormatDescriptionCreateFromH264ParameterSets(\(status))"
@@ -116,34 +118,8 @@ public class H264Decoder {
         if nalu.type != .IDR && nalu.type != .CodedSlice {
             return []
         }
-
         
-        let data = UnsafeMutablePointer<UInt8>(malloc(nalu.buffer.count+4))
-        if data == nil {
-            throw H264Error.Memory
-        }
-        defer {
-            free(data)
-        }
-        var biglen = CFSwapInt32HostToBig(UInt32(nalu.buffer.count))
-        memcpy(data, &biglen, 4)
-        memcpy(data+4, nalu.buffer.baseAddress, nalu.buffer.count)
-        var bufferUM : Unmanaged<CMBlockBuffer>?
-        var status = CMBlockBufferCreateWithMemoryBlock(nil, data, nalu.buffer.count+4, kCFAllocatorNull, nil, 0, nalu.buffer.count+4, 0, &bufferUM)
-        if status != noErr {
-            throw H264Error.CMBlockBufferCreateWithMemoryBlock(status)
-        }
-        let buffer = bufferUM!.takeRetainedValue()
-        var sampleBufferUM : Unmanaged<CMSampleBuffer>?
-        var timingInfo = CMSampleTimingInfo()
-        timingInfo.decodeTimeStamp = kCMTimeInvalid
-        timingInfo.presentationTimeStamp = kCMTimeZero // pts
-        timingInfo.duration = kCMTimeInvalid
-        status = CMSampleBufferCreateReady(kCFAllocatorDefault, buffer, formatDescription, 1, 1, &timingInfo, 0, nil, &sampleBufferUM)
-        if status != noErr {
-            throw H264Error.CMSampleBufferCreateReady(status)
-        }
-        let sampleBuffer = sampleBufferUM!.takeRetainedValue()
+        let sampleBuffer = try nalu.sampleBuffer(formatDescription)
         defer {
             CMSampleBufferInvalidate(sampleBuffer)
         }
@@ -151,13 +127,12 @@ public class H264Decoder {
         var infoFlags = VTDecodeInfoFlags(rawValue: 0)
         let frameFlags = VTDecodeFrameFlags._1xRealTimePlayback
         
-        
         pthread_mutex_lock(&mutex)
         processing = true
         processingImages = []
         processingError = nil
         pthread_mutex_unlock(&mutex)
-        status = VTDecompressionSessionDecodeFrame(videoSession, sampleBuffer, frameFlags, nil, &infoFlags)
+        let status = VTDecompressionSessionDecodeFrame(videoSession, sampleBuffer, frameFlags, nil, &infoFlags)
         if status != noErr {
             throw H264Error.VTDecompressionSessionDecodeFrame(status)
         }
