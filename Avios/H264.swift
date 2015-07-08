@@ -11,16 +11,6 @@ import AVFoundation
 import VideoToolbox
 
 
-public class H264Image {
-    public var width: Int = 0
-    public var height: Int = 0
-    public var stride: Int = 0
-    public var rgba : UnsafeBufferPointer<UInt8>
-    private init() {
-        rgba = UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>(bitPattern: 0), count: 0)
-    }
-}
-
 public enum H264Error : ErrorType, CustomStringConvertible {
     case InvalidDecoderData
     case InvalidDecoderImage
@@ -67,7 +57,7 @@ public class H264Decoder {
     private var cond = pthread_cond_t()
     private var processing = false
     private var processingError : ErrorType?
-    private var processingImages : [H264Image] = []
+    private var processingImage : AviosImage?
     private var buffer : UnsafeMutablePointer<UInt8> = nil
     private var bufsize : Int = 0
     public init() throws{
@@ -83,7 +73,7 @@ public class H264Decoder {
         free(buffer)
     }
     
-    public func decode(data: UnsafePointer<UInt8>, length: Int) throws -> [H264Image] {
+    public func decode(data: UnsafePointer<UInt8>, length: Int) throws -> AviosImage {
         let nalu = NALU(data, length: length)
         if nalu.type == .Undefined {
             throw H264Error.InvalidNALUType
@@ -110,29 +100,29 @@ public class H264Decoder {
                 dirtySPS = nil
                 dirtyPPS = nil
             }
-            return []
+            throw AviosError.NoImage
         }
         if videoSession == nil {
             throw H264Error.VideoSessionNotReady
         }
-        if nalu.type != .IDR && nalu.type != .CodedSlice {
-            return []
+        if nalu.type == .SEI {
+            throw AviosError.NoImage
         }
-        
+        if nalu.type != .IDR && nalu.type != .CodedSlice {
+            throw H264Error.InvalidNALUType
+        }
         let sampleBuffer = try nalu.sampleBuffer(formatDescription)
         defer {
             CMSampleBufferInvalidate(sampleBuffer)
         }
         
         var infoFlags = VTDecodeInfoFlags(rawValue: 0)
-        let frameFlags = VTDecodeFrameFlags._1xRealTimePlayback
-        
         pthread_mutex_lock(&mutex)
         processing = true
-        processingImages = []
+        processingImage = nil
         processingError = nil
         pthread_mutex_unlock(&mutex)
-        let status = VTDecompressionSessionDecodeFrame(videoSession, sampleBuffer, frameFlags, nil, &infoFlags)
+        let status = VTDecompressionSessionDecodeFrame(videoSession, sampleBuffer, [._EnableAsynchronousDecompression], nil, &infoFlags)
         if status != noErr {
             throw H264Error.VTDecompressionSessionDecodeFrame(status)
         }
@@ -142,12 +132,15 @@ public class H264Decoder {
             pthread_cond_wait(&cond, &mutex)
         }
         let error = processingError
-        let images = processingImages
+        let image = processingImage
         pthread_mutex_unlock(&mutex)
         if error != nil {
             throw error!
         }
-        return images
+        if let image = image {
+            return image
+        }
+        throw AviosError.NoImage
     }
     
     private func decompressionOutputCallback(sourceFrameRefCon: UnsafeMutablePointer<Void>, status: OSStatus, infoFlags: VTDecodeInfoFlags, imageBuffer: CVImageBuffer?, presentationTimeStamp: CMTime, presentationDuration: CMTime){
@@ -176,7 +169,7 @@ public class H264Decoder {
             return
         }
         
-        let image = H264Image()
+        let image = AviosImage()
         image.width = CVPixelBufferGetWidth(pixelBuffer)
         image.height = CVPixelBufferGetHeight(pixelBuffer)
         image.stride = CVPixelBufferGetBytesPerRow(pixelBuffer)
@@ -189,7 +182,7 @@ public class H264Decoder {
         }
         memcpy(buffer, CVPixelBufferGetBaseAddress(pixelBuffer), image.stride * image.height)
         image.rgba = UnsafeBufferPointer<UInt8>(start: buffer, count: image.stride * image.height)
-        processingImages += [image]
+        processingImage = image
     }
     
     private func invalidateVideo() {
@@ -232,17 +225,16 @@ public class H264Decoder {
         }
         self.videoSession = videoSessionM;
     }
-    public func decode(data: [UInt8]) throws -> [H264Image] {
+    public func decode(data: [UInt8]) throws -> AviosImage {
         return try decode(data, length: data.count)
     }
-    public func decode(data: UnsafeBufferPointer<UInt8>) throws -> [H264Image] {
+    public func decode(data: UnsafeBufferPointer<UInt8>) throws -> AviosImage {
         return try decode(data.baseAddress, length: data.count)
     }
-    public func decode(data: NSData) throws -> [H264Image] {
+    public func decode(data: NSData) throws -> AviosImage {
         return try decode(UnsafePointer<UInt8>(data.bytes), length: data.length)
     }
 }
-
 
 private func callback(decompressionOutputRefCon: UnsafeMutablePointer<Void>, sourceFrameRefCon: UnsafeMutablePointer<Void>, status: OSStatus, infoFlags: VTDecodeInfoFlags, imageBuffer: CVImageBuffer?, presentationTimeStamp: CMTime, presentationDuration: CMTime){
     unsafeBitCast(decompressionOutputRefCon, H264Decoder.self).decompressionOutputCallback(sourceFrameRefCon, status: status, infoFlags: infoFlags, imageBuffer: imageBuffer, presentationTimeStamp: presentationTimeStamp, presentationDuration: presentationDuration)

@@ -8,21 +8,6 @@
 
 import Foundation
 
-public class TheoraImage {
-    public var width: Int = 0
-    public var height: Int = 0
-    public var yStride: Int = 0
-    public var uvStride: Int = 0
-    public var y : UnsafeBufferPointer<UInt8>
-    public var u : UnsafeBufferPointer<UInt8>
-    public var v : UnsafeBufferPointer<UInt8>
-    private init() {
-        y = UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>(bitPattern: 0), count: 0)
-        u = UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>(bitPattern: 0), count: 0)
-        v = UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>(bitPattern: 0), count: 0)
-    }
-}
-
 public enum TheoraError : ErrorType {
     case InvalidHeaders
     case InvalidDecoderData
@@ -50,9 +35,9 @@ public class TheoraDecoder {
     deinit{
         theora_decoder_delete(theora)
     }
-    private func decode(data: UnsafePointer<UInt8>, length: Int) throws -> [TheoraImage] {
+    private func decode(data: UnsafePointer<UInt8>, length: Int) throws -> AviosImage {
         var error : ErrorType?
-        var image : TheoraImage!
+        var image : AviosImage!
         var done = false
         var mutex = pthread_mutex_t()
         var cond = pthread_cond_t()
@@ -74,7 +59,7 @@ public class TheoraDecoder {
                 error = TheoraError.InvalidDecoderImage
                 return
             }
-            image = TheoraImage()
+            image = AviosImage()
             image.width = Int(dimg.memory.y_width)
             image.height = Int(dimg.memory.y_height)
             image.yStride = Int(dimg.memory.y_stride)
@@ -94,17 +79,17 @@ public class TheoraDecoder {
         if error != nil{
             throw error!
         }
-        return [image]
+        return image
         
         
     }
-    public func decode(data: [UInt8]) throws -> [TheoraImage] {
+    public func decode(data: [UInt8]) throws -> AviosImage {
         return try decode(data, length: data.count)
     }
-    public func decode(data: UnsafeBufferPointer<UInt8>) throws -> [TheoraImage] {
+    public func decode(data: UnsafeBufferPointer<UInt8>) throws -> AviosImage {
         return try decode(data.baseAddress, length: data.count)
     }
-    public func decode(data: NSData) throws -> [TheoraImage] {
+    public func decode(data: NSData) throws -> AviosImage {
         return try decode(UnsafePointer<UInt8>(data.bytes), length: data.length)
     }
     
