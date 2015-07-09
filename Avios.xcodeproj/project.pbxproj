@@ -4733,7 +4733,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "Avios/libvpx/build_ios/$(arch)";
+				LIBRARY_SEARCH_PATHS = "Avios/libvpx-ios-build/$(arch)";
 				OTHER_CFLAGS = (
 					"-Wno-incompatible-pointer-types-discards-qualifiers",
 					"-Wno-parentheses",
@@ -4748,6 +4748,11 @@
 					"-IAvios/libvpx",
 				);
 				OTHER_LDFLAGS = "-lvpx";
+				"OTHER_LDFLAGS[sdk=iphonesimulator*]" = (
+					"-lvpx",
+					"-read_only_relocs",
+					suppress,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oncast.Avios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -4768,7 +4773,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "Avios/libvpx/build_ios/$(arch)";
+				LIBRARY_SEARCH_PATHS = "Avios/libvpx-ios-build/$(arch)";
 				OTHER_CFLAGS = (
 					"-Wno-incompatible-pointer-types-discards-qualifiers",
 					"-Wno-parentheses",
@@ -4783,6 +4788,11 @@
 					"-IAvios/libvpx",
 				);
 				OTHER_LDFLAGS = "-lvpx";
+				"OTHER_LDFLAGS[sdk=iphonesimulator*]" = (
+					"-lvpx",
+					"-read_only_relocs",
+					suppress,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oncast.Avios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
