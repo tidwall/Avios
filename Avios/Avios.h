@@ -18,3 +18,4 @@ FOUNDATION_EXPORT const unsigned char AviosVersionString[];
 
 #import <Avios/aac.h>
 #import <Avios/theora.h>
+#import <Avios/vp8.h>
