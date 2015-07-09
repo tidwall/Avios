@@ -6,7 +6,7 @@
 //  Copyright © 2015 ONcast, LLC. All rights reserved.
 //
 
-import Foundation
+import CoreMedia
 
 public enum NALUType : UInt8, CustomStringConvertible {
     case Undefined = 0
@@ -45,6 +45,10 @@ public enum NALUType : UInt8, CustomStringConvertible {
 }
 
 public class NALU {
+    private var bbuffer : CMBlockBuffer!
+    private var bbdata : UnsafeMutablePointer<UInt8> = nil
+    private var bblen  = [UInt8](count: 8, repeatedValue: 0)
+
     private var copied = false
     public let buffer : UnsafeBufferPointer<UInt8>
     public let type : NALUType
@@ -66,6 +70,9 @@ public class NALU {
     deinit {
         if copied {
             free(UnsafeMutablePointer<UInt8>(buffer.baseAddress))
+        }
+        if bbdata != nil {
+            free(bbdata)
         }
     }
     public convenience init(){
@@ -94,5 +101,45 @@ public class NALU {
         return NSData(bytesNoCopy: UnsafeMutablePointer<Void>(buffer.baseAddress), length: buffer.count, freeWhenDone: false)
     }
     
+    // returns a non-contiguous CMBlockBuffer.
+    public func blockBuffer() throws -> CMBlockBuffer {
+        if bbuffer != nil {
+            return bbuffer
+        }
+
+        var biglen = CFSwapInt32HostToBig(UInt32(buffer.count))
+        memcpy(&bblen, &biglen, 4)
+        var bufferUM : Unmanaged<CMBlockBuffer>?
+        var status = CMBlockBufferCreateWithMemoryBlock(nil, &bblen, 4, kCFAllocatorNull, nil, 0, 4, 0, &bufferUM)
+        if status != noErr {
+            throw H264Error.CMBlockBufferCreateWithMemoryBlock(status)
+        }
+        var bufferDataUM : Unmanaged<CMBlockBuffer>?
+        status = CMBlockBufferCreateWithMemoryBlock(nil, UnsafeMutablePointer<UInt8>(buffer.baseAddress), buffer.count, kCFAllocatorNull, nil, 0, buffer.count, 0, &bufferDataUM)
+        if status != noErr {
+            throw H264Error.CMBlockBufferCreateWithMemoryBlock(status)
+        }
+
+        let _buffer = bufferUM!.takeRetainedValue()
+        status = CMBlockBufferAppendBufferReference(_buffer, bufferDataUM!.takeUnretainedValue(), 0, buffer.count, 0)
+        if status != noErr {
+            throw H264Error.CMBlockBufferAppendBufferReference(status)
+        }
+        bbuffer = _buffer
+        
+        return bbuffer
+    }
     
+    public func sampleBuffer(fd : CMVideoFormatDescription) throws -> CMSampleBuffer {
+        var sampleBufferUM : Unmanaged<CMSampleBuffer>?
+        var timingInfo = CMSampleTimingInfo()
+        timingInfo.decodeTimeStamp = kCMTimeInvalid
+        timingInfo.presentationTimeStamp = kCMTimeZero // pts
+        timingInfo.duration = kCMTimeInvalid
+        let status = CMSampleBufferCreateReady(kCFAllocatorDefault, try blockBuffer(), fd, 1, 1, &timingInfo, 0, nil, &sampleBufferUM)
+        if status != noErr {
+            throw H264Error.CMSampleBufferCreateReady(status)
+        }
+        return sampleBufferUM!.takeRetainedValue()
+    }
 }

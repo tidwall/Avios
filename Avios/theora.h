@@ -9,6 +9,9 @@
 #ifndef __THEORA_H__
 #define __THEORA_H__
 
+#include <stdbool.h>
+#include <stdint.h>
+
 typedef struct  {
     int   y_width;
     int   y_height;

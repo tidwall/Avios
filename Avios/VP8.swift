@@ -1,5 +1,5 @@
 //
-//  Theora.swift
+//  VP8.swift
 //  Avios
 //
 //  Created by Josh Baker on 6/27/15.
@@ -8,32 +8,23 @@
 
 import Foundation
 
-public enum TheoraError : ErrorType {
+public enum VP8Error : ErrorType {
     case InvalidHeaders
     case InvalidDecoderData
     case InvalidDecoderImage
 }
 
-public class TheoraDecoder {
-    let theora : COpaquePointer
+public class VP8Decoder {
+    let vp8 : COpaquePointer
     let queue = dispatch_queue_create(nil, nil)
-    private init(_ headers : UnsafePointer<UInt8>, length: Int) throws {
-        theora = theora_decoder_new(headers, length)
-        if theora == nil {
-            throw TheoraError.InvalidHeaders
+    public init() throws {
+        vp8 = vp8_decoder_new()
+        if vp8 == nil {
+            throw VP8Error.InvalidHeaders
         }
     }
-    public convenience init(_ headers : [UInt8]) throws {
-        try self.init(headers, length: headers.count)
-    }
-    public convenience init(_ headers : UnsafeBufferPointer<UInt8>) throws {
-        try self.init(headers.baseAddress, length: headers.count)
-    }
-    public convenience init(_ headers : NSData) throws {
-        try self.init(UnsafePointer<UInt8>(headers.bytes), length: headers.length)
-    }
     deinit{
-        theora_decoder_delete(theora)
+        vp8_decoder_delete(vp8)
     }
     private func decode(data: UnsafePointer<UInt8>, length: Int) throws -> AviosImage {
         var error : ErrorType?
@@ -50,13 +41,13 @@ public class TheoraDecoder {
                 pthread_cond_broadcast(&cond)
                 pthread_mutex_unlock(&mutex)
             }
-            if !theora_decoder_decode(self.theora, data, length){
-                error = TheoraError.InvalidDecoderData
+            if !vp8_decoder_decode(self.vp8, data, length){
+                error = VP8Error.InvalidDecoderData
                 return
             }
-            let dimg = theora_decoder_get_image(self.theora)
+            let dimg = vp8_decoder_get_image(self.vp8)
             if dimg == nil {
-                error = TheoraError.InvalidDecoderImage
+                error = VP8Error.InvalidDecoderImage
                 return
             }
             image = AviosImage()
@@ -68,7 +59,7 @@ public class TheoraDecoder {
             image.u = UnsafeBufferPointer<UInt8>(start: dimg.memory.u, count: image.uvStride*(image.height/2))
             image.v = UnsafeBufferPointer<UInt8>(start: dimg.memory.v, count: image.uvStride*(image.height/2))
         }
-
+        
         pthread_mutex_lock(&mutex)
         while !done {
             pthread_cond_wait(&cond, &mutex)

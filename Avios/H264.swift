@@ -11,16 +11,6 @@ import AVFoundation
 import VideoToolbox
 
 
-public class H264Image {
-    public var width: Int = 0
-    public var height: Int = 0
-    public var stride: Int = 0
-    public var rgba : UnsafeBufferPointer<UInt8>
-    private init() {
-        rgba = UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>(bitPattern: 0), count: 0)
-    }
-}
-
 public enum H264Error : ErrorType, CustomStringConvertible {
     case InvalidDecoderData
     case InvalidDecoderImage
@@ -28,6 +18,7 @@ public enum H264Error : ErrorType, CustomStringConvertible {
     case VideoSessionNotReady
     case Memory
     case CMBlockBufferCreateWithMemoryBlock(OSStatus)
+    case CMBlockBufferAppendBufferReference(OSStatus)
     case CMSampleBufferCreateReady(OSStatus)
     case VTDecompressionSessionDecodeFrame(OSStatus)
     case CMVideoFormatDescriptionCreateFromH264ParameterSets(OSStatus)
@@ -42,6 +33,7 @@ public enum H264Error : ErrorType, CustomStringConvertible {
         case .VideoSessionNotReady: return "H264Error.VideoSessionNotReady"
         case .Memory: return "H264Error.Memory"
         case let .CMBlockBufferCreateWithMemoryBlock(status): return "H264Error.CMBlockBufferCreateWithMemoryBlock(\(status))"
+        case let .CMBlockBufferAppendBufferReference(status): return "H264Error.CMBlockBufferAppendBufferReference(\(status))"
         case let .CMSampleBufferCreateReady(status): return "H264Error.CMSampleBufferCreateReady(\(status))"
         case let .VTDecompressionSessionDecodeFrame(status): return "H264Error.VTDecompressionSessionDecodeFrame(\(status))"
         case let .CMVideoFormatDescriptionCreateFromH264ParameterSets(status): return "H264Error.CMVideoFormatDescriptionCreateFromH264ParameterSets(\(status))"
@@ -65,7 +57,7 @@ public class H264Decoder {
     private var cond = pthread_cond_t()
     private var processing = false
     private var processingError : ErrorType?
-    private var processingImages : [H264Image] = []
+    private var processingImage : AviosImage?
     private var buffer : UnsafeMutablePointer<UInt8> = nil
     private var bufsize : Int = 0
     public init() throws{
@@ -81,7 +73,7 @@ public class H264Decoder {
         free(buffer)
     }
     
-    public func decode(data: UnsafePointer<UInt8>, length: Int) throws -> [H264Image] {
+    public func decode(data: UnsafePointer<UInt8>, length: Int) throws -> AviosImage {
         let nalu = NALU(data, length: length)
         if nalu.type == .Undefined {
             throw H264Error.InvalidNALUType
@@ -108,56 +100,29 @@ public class H264Decoder {
                 dirtySPS = nil
                 dirtyPPS = nil
             }
-            return []
+            throw AviosError.NoImage
         }
         if videoSession == nil {
             throw H264Error.VideoSessionNotReady
         }
+        if nalu.type == .SEI {
+            throw AviosError.NoImage
+        }
         if nalu.type != .IDR && nalu.type != .CodedSlice {
-            return []
+            throw H264Error.InvalidNALUType
         }
-
-        
-        let data = UnsafeMutablePointer<UInt8>(malloc(nalu.buffer.count+4))
-        if data == nil {
-            throw H264Error.Memory
-        }
-        defer {
-            free(data)
-        }
-        var biglen = CFSwapInt32HostToBig(UInt32(nalu.buffer.count))
-        memcpy(data, &biglen, 4)
-        memcpy(data+4, nalu.buffer.baseAddress, nalu.buffer.count)
-        var bufferUM : Unmanaged<CMBlockBuffer>?
-        var status = CMBlockBufferCreateWithMemoryBlock(nil, data, nalu.buffer.count+4, kCFAllocatorNull, nil, 0, nalu.buffer.count+4, 0, &bufferUM)
-        if status != noErr {
-            throw H264Error.CMBlockBufferCreateWithMemoryBlock(status)
-        }
-        let buffer = bufferUM!.takeRetainedValue()
-        var sampleBufferUM : Unmanaged<CMSampleBuffer>?
-        var timingInfo = CMSampleTimingInfo()
-        timingInfo.decodeTimeStamp = kCMTimeInvalid
-        timingInfo.presentationTimeStamp = kCMTimeZero // pts
-        timingInfo.duration = kCMTimeInvalid
-        status = CMSampleBufferCreateReady(kCFAllocatorDefault, buffer, formatDescription, 1, 1, &timingInfo, 0, nil, &sampleBufferUM)
-        if status != noErr {
-            throw H264Error.CMSampleBufferCreateReady(status)
-        }
-        let sampleBuffer = sampleBufferUM!.takeRetainedValue()
+        let sampleBuffer = try nalu.sampleBuffer(formatDescription)
         defer {
             CMSampleBufferInvalidate(sampleBuffer)
         }
         
         var infoFlags = VTDecodeInfoFlags(rawValue: 0)
-        let frameFlags = VTDecodeFrameFlags._1xRealTimePlayback
-        
-        
         pthread_mutex_lock(&mutex)
         processing = true
-        processingImages = []
+        processingImage = nil
         processingError = nil
         pthread_mutex_unlock(&mutex)
-        status = VTDecompressionSessionDecodeFrame(videoSession, sampleBuffer, frameFlags, nil, &infoFlags)
+        let status = VTDecompressionSessionDecodeFrame(videoSession, sampleBuffer, [._EnableAsynchronousDecompression], nil, &infoFlags)
         if status != noErr {
             throw H264Error.VTDecompressionSessionDecodeFrame(status)
         }
@@ -167,12 +132,15 @@ public class H264Decoder {
             pthread_cond_wait(&cond, &mutex)
         }
         let error = processingError
-        let images = processingImages
+        let image = processingImage
         pthread_mutex_unlock(&mutex)
         if error != nil {
             throw error!
         }
-        return images
+        if let image = image {
+            return image
+        }
+        throw AviosError.NoImage
     }
     
     private func decompressionOutputCallback(sourceFrameRefCon: UnsafeMutablePointer<Void>, status: OSStatus, infoFlags: VTDecodeInfoFlags, imageBuffer: CVImageBuffer?, presentationTimeStamp: CMTime, presentationDuration: CMTime){
@@ -201,7 +169,7 @@ public class H264Decoder {
             return
         }
         
-        let image = H264Image()
+        let image = AviosImage()
         image.width = CVPixelBufferGetWidth(pixelBuffer)
         image.height = CVPixelBufferGetHeight(pixelBuffer)
         image.stride = CVPixelBufferGetBytesPerRow(pixelBuffer)
@@ -214,7 +182,7 @@ public class H264Decoder {
         }
         memcpy(buffer, CVPixelBufferGetBaseAddress(pixelBuffer), image.stride * image.height)
         image.rgba = UnsafeBufferPointer<UInt8>(start: buffer, count: image.stride * image.height)
-        processingImages += [image]
+        processingImage = image
     }
     
     private func invalidateVideo() {
@@ -257,17 +225,16 @@ public class H264Decoder {
         }
         self.videoSession = videoSessionM;
     }
-    public func decode(data: [UInt8]) throws -> [H264Image] {
+    public func decode(data: [UInt8]) throws -> AviosImage {
         return try decode(data, length: data.count)
     }
-    public func decode(data: UnsafeBufferPointer<UInt8>) throws -> [H264Image] {
+    public func decode(data: UnsafeBufferPointer<UInt8>) throws -> AviosImage {
         return try decode(data.baseAddress, length: data.count)
     }
-    public func decode(data: NSData) throws -> [H264Image] {
+    public func decode(data: NSData) throws -> AviosImage {
         return try decode(UnsafePointer<UInt8>(data.bytes), length: data.length)
     }
 }
-
 
 private func callback(decompressionOutputRefCon: UnsafeMutablePointer<Void>, sourceFrameRefCon: UnsafeMutablePointer<Void>, status: OSStatus, infoFlags: VTDecodeInfoFlags, imageBuffer: CVImageBuffer?, presentationTimeStamp: CMTime, presentationDuration: CMTime){
     unsafeBitCast(decompressionOutputRefCon, H264Decoder.self).decompressionOutputCallback(sourceFrameRefCon, status: status, infoFlags: infoFlags, imageBuffer: imageBuffer, presentationTimeStamp: presentationTimeStamp, presentationDuration: presentationDuration)

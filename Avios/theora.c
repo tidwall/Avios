@@ -6,8 +6,6 @@
 //  Copyright © 2015 ONcast, LLC. All rights reserved.
 //
 
-
-#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -144,6 +142,7 @@ void theora_decoder_delete(theora_decoder *theora){
         return;
     }
     theora_decoder_teardown(theora);
+    free(theora);
 }
 
 theora_image *theora_decoder_get_image(theora_decoder *theora){

@@ -59,6 +59,10 @@
 		0313FF2D1B3B1C79005D6AB0 /* encode.c in Sources */ = {isa = PBXBuildFile; fileRef = 0313FE731B3B19F9005D6AB0 /* encode.c */; };
 		0313FF301B3B2223005D6AB0 /* theora.c in Sources */ = {isa = PBXBuildFile; fileRef = 0313FF2E1B3B2223005D6AB0 /* theora.c */; };
 		0313FF311B3B2223005D6AB0 /* theora.h in Headers */ = {isa = PBXBuildFile; fileRef = 0313FF2F1B3B2223005D6AB0 /* theora.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0322ED811B4DE5B400101654 /* vp8.c in Sources */ = {isa = PBXBuildFile; fileRef = 0322ED7F1B4DE5B400101654 /* vp8.c */; };
+		0322ED821B4DE5B400101654 /* vp8.h in Headers */ = {isa = PBXBuildFile; fileRef = 0322ED801B4DE5B400101654 /* vp8.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0322ED841B4DEB7F00101654 /* VP8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0322ED831B4DEB7F00101654 /* VP8.swift */; };
+		03285D291B498B2A0078A1AA /* Avios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03285D281B498B2A0078A1AA /* Avios.swift */; };
 		0392BC431B3498B8000EED3F /* aac.c in Sources */ = {isa = PBXBuildFile; fileRef = 0392BC3E1B3498B8000EED3F /* aac.c */; };
 		0392BC441B3498B8000EED3F /* aac.h in Headers */ = {isa = PBXBuildFile; fileRef = 0392BC3F1B3498B8000EED3F /* aac.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0392BC451B3498B8000EED3F /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 0392BC401B3498B8000EED3F /* config.h */; };
@@ -126,6 +130,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0322ED7D1B4DE2D500101654 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 03A6ED461B33A84500D65170 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0322ED731B4DDE2700101654;
+			remoteInfo = "Build Libvpx";
+		};
 		03A6ED5B1B33A84500D65170 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 03A6ED461B33A84500D65170 /* Project object */;
@@ -246,6 +257,10 @@
 		0313FF241B3B1B41005D6AB0 /* theoraenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = theoraenc.h; sourceTree = "<group>"; };
 		0313FF2E1B3B2223005D6AB0 /* theora.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = theora.c; sourceTree = "<group>"; };
 		0313FF2F1B3B2223005D6AB0 /* theora.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = theora.h; sourceTree = "<group>"; };
+		0322ED7F1B4DE5B400101654 /* vp8.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vp8.c; sourceTree = "<group>"; };
+		0322ED801B4DE5B400101654 /* vp8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vp8.h; sourceTree = "<group>"; };
+		0322ED831B4DEB7F00101654 /* VP8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VP8.swift; sourceTree = "<group>"; };
+		03285D281B498B2A0078A1AA /* Avios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Avios.swift; sourceTree = "<group>"; };
 		0392BC3E1B3498B8000EED3F /* aac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = aac.c; sourceTree = "<group>"; };
 		0392BC3F1B3498B8000EED3F /* aac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aac.h; sourceTree = "<group>"; };
 		0392BC401B3498B8000EED3F /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
@@ -2281,10 +2296,14 @@
 				0392BC3F1B3498B8000EED3F /* aac.h */,
 				0313FF2E1B3B2223005D6AB0 /* theora.c */,
 				0313FF2F1B3B2223005D6AB0 /* theora.h */,
+				0322ED7F1B4DE5B400101654 /* vp8.c */,
+				0322ED801B4DE5B400101654 /* vp8.h */,
 				0392BC401B3498B8000EED3F /* config.h */,
 				0392BC411B3498B8000EED3F /* Info.plist */,
 				0392BC421B3498B8000EED3F /* Avios.h */,
+				03285D281B498B2A0078A1AA /* Avios.swift */,
 				03D44B2E1B3F0E11001D0BFF /* Theora.swift */,
+				0322ED831B4DEB7F00101654 /* VP8.swift */,
 				03EF66B71B41C10100E2448A /* H264.swift */,
 				03EF66B91B41C36600E2448A /* NALU.swift */,
 				0313FF181B3B1AB9005D6AB0 /* libogg */,
@@ -4329,6 +4348,7 @@
 				0313FF201B3B1AB9005D6AB0 /* os_types.h in Headers */,
 				0313FF261B3B1B41005D6AB0 /* theora.h in Headers */,
 				0313FEF31B3B19F9005D6AB0 /* state.h in Headers */,
+				0322ED821B4DE5B400101654 /* vp8.h in Headers */,
 				0313FEE01B3B19F9005D6AB0 /* huffdec.h in Headers */,
 				0313FEF01B3B19F9005D6AB0 /* quant.h in Headers */,
 				0313FEB61B3B19F9005D6AB0 /* apiwrapper.h in Headers */,
@@ -4351,6 +4371,23 @@
 		};
 /* End PBXHeadersBuildPhase section */
 
+/* Begin PBXLegacyTarget section */
+		0322ED731B4DDE2700101654 /* Build Libvpx */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(arch) $(ACTION) ";
+			buildConfigurationList = 0322ED761B4DDE2700101654 /* Build configuration list for PBXLegacyTarget "Build Libvpx" */;
+			buildPhases = (
+			);
+			buildToolPath = "Avios/libvpx-ios.sh";
+			buildWorkingDirectory = "";
+			dependencies = (
+			);
+			name = "Build Libvpx";
+			passBuildSettingsInEnvironment = 0;
+			productName = "Build Libvpx";
+		};
+/* End PBXLegacyTarget section */
+
 /* Begin PBXNativeTarget section */
 		03A6ED4E1B33A84500D65170 /* Avios */ = {
 			isa = PBXNativeTarget;
@@ -4364,6 +4401,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				0322ED7E1B4DE2D500101654 /* PBXTargetDependency */,
 			);
 			name = Avios;
 			productName = Libav;
@@ -4398,6 +4436,9 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "ONcast, LLC";
 				TargetAttributes = {
+					0322ED731B4DDE2700101654 = {
+						CreatedOnToolsVersion = 7.0;
+					};
 					03A6ED4E1B33A84500D65170 = {
 						CreatedOnToolsVersion = 7.0;
 					};
@@ -4421,6 +4462,7 @@
 			targets = (
 				03A6ED4E1B33A84500D65170 /* Avios */,
 				03A6ED581B33A84500D65170 /* AviosTests */,
+				0322ED731B4DDE2700101654 /* Build Libvpx */,
 			);
 		};
 /* End PBXProject section */
@@ -4489,6 +4531,7 @@
 				0313FEEC1B3B19F9005D6AB0 /* mcenc.c in Sources */,
 				0313FEEA1B3B19F9005D6AB0 /* mathops.c in Sources */,
 				03A607C91B346C0900D65170 /* aviobuf.c in Sources */,
+				0322ED811B4DE5B400101654 /* vp8.c in Sources */,
 				03A608721B34865900D65170 /* kbdwin.c in Sources */,
 				03A608771B34876400D65170 /* mathtables.c in Sources */,
 				03A607B11B345A9000D65170 /* buffer.c in Sources */,
@@ -4503,6 +4546,7 @@
 				03A6087A1B34887400D65170 /* aac_parser.c in Sources */,
 				03A608781B34877800D65170 /* sbrdsp.c in Sources */,
 				03A607CB1B346CB600D65170 /* intmath.c in Sources */,
+				03285D291B498B2A0078A1AA /* Avios.swift in Sources */,
 				03A607B51B345B1800D65170 /* mem.c in Sources */,
 				03A607D01B34703D00D65170 /* time.c in Sources */,
 				03A607B01B345A4C00D65170 /* frame.c in Sources */,
@@ -4512,6 +4556,7 @@
 				0313FED71B3B19F9005D6AB0 /* encinfo.c in Sources */,
 				03A607BE1B345EB500D65170 /* mathematics.c in Sources */,
 				0313FEDD1B3B19F9005D6AB0 /* fdct.c in Sources */,
+				0322ED841B4DEB7F00101654 /* VP8.swift in Sources */,
 				0313FF1E1B3B1AB9005D6AB0 /* framing.c in Sources */,
 				0313FEF21B3B19F9005D6AB0 /* state.c in Sources */,
 				0313FECF1B3B19F9005D6AB0 /* decapiwrapper.c in Sources */,
@@ -4549,6 +4594,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0322ED7E1B4DE2D500101654 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0322ED731B4DDE2700101654 /* Build Libvpx */;
+			targetProxy = 0322ED7D1B4DE2D500101654 /* PBXContainerItemProxy */;
+		};
 		03A6ED5C1B33A84500D65170 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 03A6ED4E1B33A84500D65170 /* Avios */;
@@ -4557,6 +4607,33 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		0322ED741B4DDE2700101654 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0322ED751B4DDE2700101654 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		03A6ED611B33A84500D65170 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4651,10 +4728,12 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = Avios/libvpx;
 				INFOPLIST_FILE = Avios/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "Avios/libvpx-ios-build/$(arch)";
 				OTHER_CFLAGS = (
 					"-Wno-incompatible-pointer-types-discards-qualifiers",
 					"-Wno-parentheses",
@@ -4664,6 +4743,15 @@
 					"-Wno-incompatible-pointer-types",
 					"-Wno-conditional-uninitialized",
 					"-Wno-tautological-compare",
+					"-Wno-unused-function",
+					"-Wno-unreachable-code",
+					"-IAvios/libvpx",
+				);
+				OTHER_LDFLAGS = "-lvpx";
+				"OTHER_LDFLAGS[sdk=iphonesimulator*]" = (
+					"-lvpx",
+					"-read_only_relocs",
+					suppress,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oncast.Avios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4680,10 +4768,12 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = Avios/libvpx;
 				INFOPLIST_FILE = Avios/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "Avios/libvpx-ios-build/$(arch)";
 				OTHER_CFLAGS = (
 					"-Wno-incompatible-pointer-types-discards-qualifiers",
 					"-Wno-parentheses",
@@ -4693,6 +4783,15 @@
 					"-Wno-incompatible-pointer-types",
 					"-Wno-conditional-uninitialized",
 					"-Wno-tautological-compare",
+					"-Wno-unused-function",
+					"-Wno-unreachable-code",
+					"-IAvios/libvpx",
+				);
+				OTHER_LDFLAGS = "-lvpx";
+				"OTHER_LDFLAGS[sdk=iphonesimulator*]" = (
+					"-lvpx",
+					"-read_only_relocs",
+					suppress,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oncast.Avios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4724,6 +4823,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0322ED761B4DDE2700101654 /* Build configuration list for PBXLegacyTarget "Build Libvpx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0322ED741B4DDE2700101654 /* Debug */,
+				0322ED751B4DDE2700101654 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		03A6ED491B33A84500D65170 /* Build configuration list for PBXProject "Avios" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
