@@ -196,14 +196,14 @@ public class H264Decoder {
     }
     private func initVideoSession() throws {
         formatDescription = nil
-        var formatDescriptionUM : Unmanaged<CMVideoFormatDescription>?
+        var _formatDescription : CMFormatDescription?
         let parameterSetPointers : [UnsafePointer<UInt8>] = [ pps!.buffer.baseAddress, sps!.buffer.baseAddress ]
         let parameterSetSizes : [Int] = [ pps!.buffer.count, sps!.buffer.count ]
-        var status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault, 2, parameterSetPointers, parameterSetSizes, 4, &formatDescriptionUM);
+        var status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault, 2, parameterSetPointers, parameterSetSizes, 4, &_formatDescription);
         if status != noErr {
             throw H264Error.CMVideoFormatDescriptionCreateFromH264ParameterSets(status)
         }
-        formatDescription = formatDescriptionUM!.takeRetainedValue()
+        formatDescription = _formatDescription!
 
         if videoSession != nil {
             VTDecompressionSessionInvalidate(videoSession)

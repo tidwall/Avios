@@ -109,19 +109,18 @@ public class NALU {
 
         var biglen = CFSwapInt32HostToBig(UInt32(buffer.count))
         memcpy(&bblen, &biglen, 4)
-        var bufferUM : Unmanaged<CMBlockBuffer>?
-        var status = CMBlockBufferCreateWithMemoryBlock(nil, &bblen, 4, kCFAllocatorNull, nil, 0, 4, 0, &bufferUM)
+        var _buffer : CMBlockBuffer?
+        var status = CMBlockBufferCreateWithMemoryBlock(nil, &bblen, 4, kCFAllocatorNull, nil, 0, 4, 0, &_buffer)
         if status != noErr {
             throw H264Error.CMBlockBufferCreateWithMemoryBlock(status)
         }
-        var bufferDataUM : Unmanaged<CMBlockBuffer>?
-        status = CMBlockBufferCreateWithMemoryBlock(nil, UnsafeMutablePointer<UInt8>(buffer.baseAddress), buffer.count, kCFAllocatorNull, nil, 0, buffer.count, 0, &bufferDataUM)
+        var bufferData : CMBlockBuffer?
+        status = CMBlockBufferCreateWithMemoryBlock(nil, UnsafeMutablePointer<UInt8>(buffer.baseAddress), buffer.count, kCFAllocatorNull, nil, 0, buffer.count, 0, &bufferData)
         if status != noErr {
             throw H264Error.CMBlockBufferCreateWithMemoryBlock(status)
         }
 
-        let _buffer = bufferUM!.takeRetainedValue()
-        status = CMBlockBufferAppendBufferReference(_buffer, bufferDataUM!.takeUnretainedValue(), 0, buffer.count, 0)
+        status = CMBlockBufferAppendBufferReference(_buffer!, bufferData!, 0, buffer.count, 0)
         if status != noErr {
             throw H264Error.CMBlockBufferAppendBufferReference(status)
         }
@@ -131,15 +130,15 @@ public class NALU {
     }
     
     public func sampleBuffer(fd : CMVideoFormatDescription) throws -> CMSampleBuffer {
-        var sampleBufferUM : Unmanaged<CMSampleBuffer>?
+        var sampleBuffer : CMSampleBuffer?
         var timingInfo = CMSampleTimingInfo()
         timingInfo.decodeTimeStamp = kCMTimeInvalid
         timingInfo.presentationTimeStamp = kCMTimeZero // pts
         timingInfo.duration = kCMTimeInvalid
-        let status = CMSampleBufferCreateReady(kCFAllocatorDefault, try blockBuffer(), fd, 1, 1, &timingInfo, 0, nil, &sampleBufferUM)
+        let status = CMSampleBufferCreateReady(kCFAllocatorDefault, try blockBuffer(), fd, 1, 1, &timingInfo, 0, nil, &sampleBuffer)
         if status != noErr {
             throw H264Error.CMSampleBufferCreateReady(status)
         }
-        return sampleBufferUM!.takeRetainedValue()
+        return sampleBuffer!
     }
 }
