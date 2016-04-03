@@ -5,17 +5,24 @@
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
     "3298BBC15CA3EA0F7D15CF3C09DAC497B57F4AC3" : 0,
+    "036A83C680D877DD8A251C3C32105026BEAB6A0A" : 0,
     "810CDB83D8F1650C0C9CC5D93FE9FC682F8DC71F" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "9C93162A-79F4-42BF-82E4-33E0AD3DA415",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "3298BBC15CA3EA0F7D15CF3C09DAC497B57F4AC3" : "..",
+    "036A83C680D877DD8A251C3C32105026BEAB6A0A" : "",
     "810CDB83D8F1650C0C9CC5D93FE9FC682F8DC71F" : "Avios\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Avios",
-  "DVTSourceControlWorkspaceBlueprintVersion" : 203,
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Avios.xcodeproj",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/cbkr98\/DungeonCrawlerBasic",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "036A83C680D877DD8A251C3C32105026BEAB6A0A"
+    },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/oncastdev\/oncast-ios",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
