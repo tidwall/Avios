@@ -8,6 +8,6 @@ Josh Baker [@tidwall](https://twitter.com/tidwall)
 
 ## License
 
-Avios source ode is available under the MIT [License](LICENSE)
+Avios source code is available under the MIT [License](LICENSE)
 
 
