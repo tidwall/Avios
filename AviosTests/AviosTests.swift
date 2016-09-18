@@ -23,11 +23,6 @@ class LibavTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        var aac = aac_decoder_new(44100, 2)
-        XCTAssert(aac != nil)
-        aac_decoder_decode(aac, nil, 0)
-        aac_decoder_delete(aac)
-        aac = nil
     }
     
     func testPerformanceExample() {
